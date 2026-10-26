@@ -1,61 +1,98 @@
-# Siamese Neural Network-Based Handwritten Signature Verification
+# Handwritten Signature Verification using Siamese Neural Network
+### With Bank Document-Verification Module
+**Author:** Mada Jahnavi  
+**Domain:** Deep Learning & Computer Vision  
+**Degree Level:** B.Tech Mini Project  
 
-**B.Tech Mini Project | Deep Learning & Computer Vision**  
-**Project by: Mada Jahnavi**
+---
 
-## Abstract
-This project presents an educational handwritten-signature comparison system. It explores a Siamese Convolutional Neural Network (CNN), where two signature images are processed by a shared-weight feature extractor and compared to learn whether a pair is similar. A Streamlit interface allows a user to upload two images and view a comparison score. The included app initially uses a simple pixel-similarity baseline so it can run without a trained model; the training script is provided as the next step for experimentation with labelled genuine and forged signatures.
+## 📌 Project Overview
+The proposed system introduces a Siamese neural network to verify genuine handwritten signatures against forged samples, addressing the challenging problem of offline handwritten signature verification through a data-driven deep metric learning approach. Scanned signature image pairs form the basis of the dataset, which is processed through a structured pipeline before model building and evaluation. Results are presented through a bank document-verification module, so that the insights generated are directly actionable.
 
-## Keywords
-Handwritten Signature, Signature Verification, Siamese Neural Network, CNN, Deep Learning, Computer Vision.
+---
 
-## Architecture
-Signature pair → grayscale conversion and resizing → shared CNN encoder → feature embeddings → distance / pair classifier → similarity output → Streamlit result page.
+## 🌟 Key Highlights
+1. **Twin CNN Architecture:** Two weight-sharing branches project signature images into a 128-dimensional discriminative embedding space.
+2. **Contrastive Loss Optimization:** Pulls genuine signature embeddings together and pushes forged signature embeddings beyond margin $m = 1.0$.
+3. **Structured Image Preprocessing Pipeline:**
+   - Grayscale conversion
+   - Gaussian filtering & noise suppression
+   - Otsu's adaptive binarization
+   - Morphological stroke closing
+   - Bounding box contour detection & aspect-ratio preserving canvas padding (100x100)
+   - Intensity normalization to $[0, 1]$
+4. **Bank Document-Verification Module (Web UI):**
+   - **Bank Cheque Verification:** Automatic Region of Interest (ROI) extraction of the drawer signature from scanned bank cheques and transaction slips.
+   - **Customer Specimen Database:** Registered customer accounts with specimen signatures.
+   - **Explainable AI:** Spatial Stroke Divergence Heatmap highlighting pen tremors and curvature differences.
+   - **Automated Audit Certificates:** Generates official downloadable PDF certificates with timestamps and examiner sign-offs.
+5. **Comprehensive Evaluation Metrics:** ROC Curve, AUC, Equal Error Rate (EER), False Acceptance Rate (FAR), False Rejection Rate (FRR), and Confusion Matrix.
 
-## Features
-- Upload two signature images (PNG/JPG/JPEG)
-- Preprocessing: grayscale, contrast enhancement and fixed-size resizing
-- Similarity score and configurable demo threshold
-- Siamese CNN training starter script
-- Simple Streamlit web interface
+---
 
-## Run locally
-1. Install Python 3.10 or 3.11 in a virtual environment.
-2. Open a terminal in this project folder.
-3. Install packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Start the app:
-   ```bash
-   streamlit run app.py
-   ```
-
-## Train the Siamese model
-Create this structure and place labelled images in the folders:
-```text
-data/
-  genuine/
-  forged/
+## 📁 Directory Structure
 ```
-Then run:
-```bash
-python train.py --data data --epochs 10 --pairs 500
+SignatureVerification_SiameseNet/
+├── data/
+│   ├── raw/
+│   │   ├── genuine/               # Raw genuine signature images
+│   │   └── forged/                # Raw forged signature images
+│   ├── processed/                 # Standardized 100x100 inverted signatures
+│   └── bank_cheques/              # Scanned Bank Cheques with Drawer Signatures
+├── saved_models/
+│   ├── best_siamese_model.pth     # Trained PyTorch Siamese weights
+│   ├── training_metrics.json      # Training loss & accuracy records
+│   └── training_curves.png        # Contrastive loss & distance separation plots
+├── reports/
+│   ├── evaluation_report.json     # ROC, AUC, EER, and confusion matrix metrics
+│   ├── roc_eer_curves.png         # ROC & EER tradeoff curves
+│   └── distance_distribution.png  # Genuine vs Forged distance histogram
+├── static/
+│   ├── css/style.css              # Bank corporate styling
+│   └── js/app.js                  # Frontend UI logic
+├── templates/
+│   └── index.html                 # Bank Document Verification Portal
+├── app.py                         # FastAPI Web Server Application
+├── bank_verification_engine.py    # Inference, ROI extraction, and PDF engine
+├── model.py                       # Siamese Architecture & Contrastive Loss
+├── dataset.py                     # Balanced Pair Dataset & Dataloaders
+├── preprocessing.py               # Structured Image Processing Pipeline
+├── generate_dataset.py            # Signature & Bank Cheque Generator
+├── train.py                       # Training pipeline
+├── evaluate.py                    # Evaluation, ROC, EER analysis
+├── run_app.bat                    # 1-Click Windows execution script
+├── train_model.bat                # 1-Click Model training script
+├── PROJECT_REPORT.md              # Complete B.Tech Academic Project Report
+└── VIVA_VOCE_PREPARATION.md       # 35+ Viva Voce Questions & Answers
 ```
-The trained model is saved under `models/`. The current `app.py` is a runnable UI prototype and uses a pixel-similarity baseline; connect and validate the trained model before presenting the app as a Siamese-model prediction system.
 
-## Dataset and evaluation notes
-- Use a permitted public dataset or images collected with consent.
-- Do not mix images from the same writer across training and test splits when evaluating generalization.
-- Report accuracy, precision, recall, F1-score, ROC-AUC and a confusion matrix on held-out data.
-- Do not treat a demo score as proof of authenticity. This project is for academic demonstration, not bank-grade verification.
+---
 
-## Deploy on Streamlit Community Cloud
-1. Push `app.py`, `requirements.txt`, and `README.md` to a GitHub repository.
-2. Open https://share.streamlit.io/ and sign in with GitHub.
-3. Select **Create app**, choose the repository, branch, and `app.py`.
-4. Deploy. If TensorFlow build time or memory is a problem, deploy the UI-only version with a lighter `requirements.txt` containing only `streamlit`, `Pillow`, and `numpy`; `train.py` then remains for local training.
+## 🚀 How to Run the Project
 
-## Author
-**Mada Jahnavi**  
-B.Tech Mini Project
+### 1. Start the Bank Document Verification Web App
+Double-click `run_app.bat` or run:
+```powershell
+python app.py
+```
+Open your web browser and go to:
+👉 **`http://127.0.0.1:8000`**
+
+### 2. Retrain the Siamese Neural Network (Optional)
+Double-click `train_model.bat` or run:
+```powershell
+python train.py
+```
+
+### 3. Run Evaluation & Generate ROC/EER Curves
+```powershell
+python evaluate.py
+```
+
+---
+
+## 👩‍💻 Student Information
+- **Name:** Mada Jahnavi
+- **Project:** B.Tech Mini Project
+- **Domain:** Deep Learning & Computer Vision
+- **Topic:** A Siamese Neural Network-Based Approach to Handwritten Signature Verification
